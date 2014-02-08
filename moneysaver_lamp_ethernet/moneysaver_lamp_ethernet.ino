@@ -1,19 +1,22 @@
+/***************************************************************************/
+#define LEDPIN 6
+#define LEDNUM 50
+
+const char kHostname[] = "172.19.1.165";
+const char kPath[] = "/lamp.php";
+
+static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
+
+const int kNetworkTimeout = 1000;
+const int kNetworkDelay = 100;
+/***************************************************************************/
 #include <SPI.h>
 #include <HttpClient.h>
 #include <Ethernet.h>
 
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 6
-const char kHostname[] = "172.19.1.165";
-const char kPath[] = "/lamp.php";
-
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(100, PIN, NEO_GRB + NEO_KHZ800);
-
-static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
-
-const int kNetworkTimeout = 1000;
-const int kNetworkDelay = 100;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(100, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 static void setupUART() {
   Serial.begin(57600);
