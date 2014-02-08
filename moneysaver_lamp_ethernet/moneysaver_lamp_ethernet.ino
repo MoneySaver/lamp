@@ -22,7 +22,7 @@ static void setupUART() {
 
 static void setupLEDs() {
   strip.begin();
-  for(uint16_t i=0; i<strip.numPixels(); i++) {
+  for (uint16_t i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, 0);
   }
   strip.setBrightness(50);
@@ -49,7 +49,7 @@ static void setupIP() {
   Serial.print("My IP address: ");
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
     Serial.print(Ethernet.localIP()[thisByte], DEC);
-    Serial.print("."); 
+    Serial.print(".");
   }
   Serial.println();
 }
@@ -65,7 +65,7 @@ void setup() {
 void loop()
 {
   int err =0;
-  
+
   EthernetClient c;
   HttpClient http(c);
 
@@ -74,7 +74,7 @@ void loop()
     int col = 0;
     byte num = 0;
     byte rgb[3];
-  
+
     err = http.get(kHostname, kPath);
     if (err == 0) {
       Serial.println("startedRequest ok");
@@ -101,7 +101,7 @@ void loop()
                     http.stop();
                     return;
                   }
-  
+
                   while (1) {
                     c = http.read();
                     Serial.print(c);
@@ -135,7 +135,7 @@ void loop()
           Serial.print("Failed to skip response headers: ");
           Serial.println(err);
         }
-      } else {    
+      } else {
         Serial.print("Getting response failed: ");
         Serial.println(err);
       }
