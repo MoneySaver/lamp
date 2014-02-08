@@ -16,6 +16,8 @@ const int kNetworkDelay = 100;
 
 #include <Adafruit_NeoPixel.h>
 
+#include <MemoryFree.h>
+
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 static void setupUART() {
@@ -77,6 +79,10 @@ void loop()
     int col = 0;
     byte num = 0;
     byte rgb[3];
+
+    Serial.println();
+    Serial.print("freeMemory()=");
+    Serial.println(freeMemory());
 
     err = http.get(kHostname, kPath);
     if (err == 0) {
