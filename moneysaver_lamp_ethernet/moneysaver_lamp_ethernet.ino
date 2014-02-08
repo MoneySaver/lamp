@@ -15,17 +15,21 @@ static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 const int kNetworkTimeout = 1000;
 const int kNetworkDelay = 100;
 
-void setup() {
-  delay(3000);
-  
+static void setupUART() {
+  Serial.begin(57600);
+  Serial.println("BOOT");
+}
+
+static void setupLEDs() {
   strip.begin();
   for(uint16_t i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, 0);
   }
   strip.setBrightness(50);
   strip.show();
+}
 
-  Serial.begin(57600);
+static void setupEthernet() {
   Serial.print("MAC: ");
   for (byte i = 0; i < 6; ++i) {
     Serial.print(mymac[i], HEX);
@@ -33,22 +37,29 @@ void setup() {
       Serial.print(':');
   }
   Serial.println();
- 
-  Serial.println("\nDHCP...");
+}
 
+static void setupIP() {
+  Serial.println("DHCP...");
   while (Ethernet.begin(mymac) != 1)
   {
     Serial.println("Error getting IP address via DHCP, trying again...");
     delay(3000);
   }
-
   Serial.print("My IP address: ");
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
-    // print the value of each byte of the IP address:
     Serial.print(Ethernet.localIP()[thisByte], DEC);
     Serial.print("."); 
   }
   Serial.println();
+}
+
+void setup() {
+  delay(3000);
+  setupUART();
+  setupEthernet();
+  setupIP();
+  setupLEDs();
 }
 
 void loop()
