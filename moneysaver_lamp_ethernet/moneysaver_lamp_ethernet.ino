@@ -16,7 +16,7 @@ const int kNetworkDelay = 100;
 
 #include <Adafruit_NeoPixel.h>
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(100, LEDPIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 static void setupUART() {
   Serial.begin(57600);
@@ -113,8 +113,10 @@ void loop()
                       num = 0;
                       col++;
                       if (col == 3) {
-                        strip.setPixelColor(pixel, rgb[0], rgb[1], rgb[2]);
-                        pixel++;
+                        if (pixel < LEDNUM) {
+                          strip.setPixelColor(pixel, rgb[0], rgb[1], rgb[2]);
+                          pixel++;
+                        }
                         col = 0;
                       }
                     }
