@@ -54,7 +54,8 @@ static void setupIP() {
   while (Ethernet.begin(mymac) != 1)
   {
     Serial.println("Error getting IP address via DHCP, trying again...");
-    delay(3000);
+    delay(1000);
+    checkTick();
   }
   Serial.print("My IP address: ");
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
