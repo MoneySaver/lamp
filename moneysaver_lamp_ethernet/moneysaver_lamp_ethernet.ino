@@ -65,7 +65,6 @@ static void setupIP() {
 }
 
 void setup() {
-  delay(3000);
   setupUART();
   setupEthernet();
   setupIP();
