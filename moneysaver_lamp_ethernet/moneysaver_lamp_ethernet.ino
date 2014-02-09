@@ -1,10 +1,10 @@
 /***************************************************************************/
 #define LEDPIN 6
-#define LEDNUM 50
+#define LEDNUM 120
 #define MAXBRIGHTNESS 80
 
-const char kHostname[] = "172.19.1.165";
-const char kPath[] = "/lamp.php";
+const char kHostname[] = "185.20.136.207";
+const char kPath[] = "/gui/api/data";
 
 static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 
