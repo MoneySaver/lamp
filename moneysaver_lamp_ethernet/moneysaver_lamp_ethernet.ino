@@ -25,7 +25,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDONE + LEDNUM + 1, LEDPIN, NEO_GRB
 static uint16_t dotpixel = 0;
 static uint32_t dotcolor = strip.Color(0, MAXBRIGHTNESS, 0);
 
-unsigned long lastTick = millis();
+unsigned long lastTick = 0;
 
 static void setupUART() {
   Serial.begin(57600);
@@ -38,7 +38,7 @@ static void setupLEDs() {
       strip.setPixelColor(i, 0, ((i < LEDONE) || i >= (LEDONE + LEDNUM)) ? 0 : MAXBRIGHTNESS, 0);
   }
   ledDot(127);
-  checkTick();
+  strip.show();
 }
 
 static void setupEthernet() {
