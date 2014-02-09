@@ -24,6 +24,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800
 static uint16_t dotpixel = 0 ;
 static uint32_t dotcolor = strip.Color(0, MAXBRIGHTNESS, 0);
 
+unsigned long lastTick = millis();
+
 static void setupUART() {
   Serial.begin(57600);
   Serial.println("BOOT");
@@ -110,6 +112,15 @@ static void ledDot(byte num) {
   strip.setPixelColor(newdot, 0, 0, 255);
 }
 
+static void checkTick() {
+  unsigned long tick = millis();
+  if ((tick - lastTick) > 1000) {
+    lastTick = millis();
+    ledShift();
+    strip.show();
+  }
+}
+
 void loop()
 {
   int err =0;
@@ -117,6 +128,7 @@ void loop()
   EthernetClient c;
   HttpClient http(c);
 
+  checkTick();
   while (1) {
     int col = 0;
     byte num = 0;
@@ -126,19 +138,22 @@ void loop()
     Serial.println(freeMemory());
 
     err = http.get(kHostname, kPath);
+    checkTick();
     if (err == 0) {
       Serial.println("startedRequest ok");
       err = http.responseStatusCode();
+      checkTick();
       if (err >= 0) {
         Serial.print("Got status code: ");
         Serial.println(err);
         err = http.skipResponseHeaders();
+        checkTick();
         if (err >= 0) {
           int bodyLen = http.contentLength();
           Serial.print("Content length is: ");
           Serial.println(bodyLen);
           Serial.println("Body returned follows:");
-          ledShift();
+          checkTick();
           unsigned long timeoutStart = millis();
           char c;
           while ((http.connected() || http.available()) &&
@@ -180,7 +195,6 @@ void loop()
                 delay(kNetworkDelay);
             }
           }
-        strip.show();
         } else {
           Serial.print("Failed to skip response headers: ");
           Serial.println(err);
