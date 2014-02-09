@@ -1,5 +1,5 @@
 /***************************************************************************/
-#define LEDPIN 6
+#define LEDPIN 8
 #define LEDNUM 120
 #define MAXBRIGHTNESS 80
 
