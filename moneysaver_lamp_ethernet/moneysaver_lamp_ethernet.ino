@@ -67,8 +67,6 @@ static void setupIP() {
 
 void setup() {
   setupUART();
-  setupEthernet();
-  setupIP();
   setupLEDs();
 }
 
@@ -124,6 +122,9 @@ static void checkTick() {
 void loop()
 {
   int err =0;
+
+  setupEthernet();
+  setupIP();
 
   EthernetClient c;
   HttpClient http(c);
