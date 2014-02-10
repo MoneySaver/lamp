@@ -2,7 +2,8 @@
 #define LEDPIN 8
 #define LEDONE 8
 #define LEDNUM 111
-#define MAXBRIGHTNESS 80
+#define MAXBRIGHTNESS 17
+#define BLUEBRIGHTNESS 129
 
 const char kHostname[] = "185.20.136.207";
 const char kPath[] = "/gui/api/data";
@@ -115,7 +116,7 @@ static void ledDot(byte num) {
   strip.setPixelColor(LEDONE + dotpixel, dotcolor);
   dotcolor = strip.getPixelColor(LEDONE + newdot);
   dotpixel = newdot;
-  strip.setPixelColor(LEDONE + newdot, 0, 0, MAXBRIGHTNESS);
+  strip.setPixelColor(LEDONE + newdot, 0, 0, BLUEBRIGHTNESS);
 }
 
 static void checkTick() {
