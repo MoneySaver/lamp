@@ -6,7 +6,11 @@
 #define BLUEBRIGHTNESS 129
 
 const char kHostname[] = "185.20.136.207";
-const char kPath[] = "/gui/api/data";
+const char kPath[] = "/gui/api/data?sensor=Power100";
+
+#define MAXSCALE 10000
+#define GREENLVL 5000
+#define REDLVL 8000
 
 static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 
@@ -141,7 +145,7 @@ void loop()
   checkTick();
   while (1) {
     int col = 0;
-    byte num = 0;
+    int num = 0;
 
     Serial.println();
     Serial.print("freeMemory()=");
@@ -181,13 +185,17 @@ void loop()
               while (1) {
                 c = http.read();
                 Serial.print(c);
-                if ((c == ',') || (c == ']')) {
-                  if (col == 0) {
-                    ledGrow(num);
-                  } else if (col == 1) {
-                    ledDot(num);
-                  }
-                  col++;
+                if (c == ']') {
+                  if (num > MAXSCALE)
+                    num = MAXSCALE;
+                  byte power = num / (MAXSCALE / 256);
+                  if (num < GREENLVL)
+                    num = GREENLVL;
+                  if (num > REDLVL)
+                    num = REDLVL;
+                  byte mood = (num - GREENLVL) / ((REDLVL - GREENLVL) / 256);
+                  ledGrow(mood);
+                  ledDot(power);
                   num = 0;
                 }
                 if ((c == '\0') || (c == ']'))
