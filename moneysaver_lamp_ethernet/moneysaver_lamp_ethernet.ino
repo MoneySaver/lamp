@@ -46,6 +46,25 @@ static void setupLEDs() {
   strip.show();
 }
 
+static void animLEDs() {
+  ledDot(255);
+  for (uint16_t i = 0; i < strip.numPixels(); i++) {
+    ledGrow(255);
+    ledShift();
+    strip.show();
+    delay(10);
+  }
+  ledDot(0);
+  for (uint16_t i = 0; i < strip.numPixels(); i++) {
+    ledGrow(0);
+    ledShift();
+    strip.show();
+    delay(10);
+  }
+  ledDot(127);
+  strip.show();
+}
+
 static void setupEthernet() {
   Serial.print("MAC: ");
   for (byte i = 0; i < 6; ++i) {
@@ -75,6 +94,7 @@ static void setupIP() {
 void setup() {
   setupUART();
   setupLEDs();
+  animLEDs();
 }
 
 static void ledShift() {
