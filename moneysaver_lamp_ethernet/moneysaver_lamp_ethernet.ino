@@ -8,6 +8,13 @@
 const char kHostname[] = "185.20.136.207";
 const char kPath[] = "/gui/api/data?sensor=Power100";
 
+/* Data from server:
+ *
+ * ["watts 0.."]
+ *   or
+ * ["watts 0..", "power 0..255", "mood 0..255"]
+ */
+
 #define MAXSCALE 10000
 #define GREENLVL 5000
 #define REDLVL 8000
@@ -164,8 +171,6 @@ void loop()
 
   checkTick();
   while (1) {
-    int col = 0;
-    int num = 0;
 
     Serial.println();
     Serial.print("freeMemory()=");
@@ -190,43 +195,60 @@ void loop()
           checkTick();
           unsigned long timeoutStart = millis();
           char c;
+          int col = 0;
+          int num = 0;
+          byte fdata = 0;
           while ((http.connected() || http.available()) &&
                  ((millis() - timeoutStart) < kNetworkTimeout)) {
             if (http.available()) {
+              if (bodyLen <= 0)
+                break;
               c = http.read();
-              if (c != '[') {
-                Serial.print("DATA FORMAT ERROR (");
-                Serial.print(c);
-                Serial.println(")");
-                http.stop();
-                return;
-              }
+              bodyLen--;
+
+              if (c == '[')
+                fdata = 1;
+
+              if (! fdata)
+                continue;
 
               while (1) {
+                if (bodyLen <= 0)
+                  break;
                 c = http.read();
+                bodyLen--;
                 Serial.print(c);
                 if (c == ']') {
-                  if (num > MAXSCALE)
-                    num = MAXSCALE;
-                  byte power = num / (MAXSCALE / 256);
-                  if (num < GREENLVL)
-                    num = GREENLVL;
-                  if (num > REDLVL)
-                    num = REDLVL;
-                  byte mood = (num - GREENLVL) / ((REDLVL - GREENLVL) / 256);
-                  ledGrow(mood);
-                  ledDot(power);
-                  num = 0;
+                  if (col == 0) {
+                    if (num > MAXSCALE)
+                      num = MAXSCALE;
+                    byte power = num / (MAXSCALE / 256);
+                    if (num < GREENLVL)
+                      num = GREENLVL;
+                    if (num > REDLVL)
+                      num = REDLVL;
+                    byte mood = (num - GREENLVL) / ((REDLVL - GREENLVL) / 256);
+                    ledGrow(mood);
+                    ledDot(power);
+                    num = 0;
+                  } else if (col == 2) {
+                    ledGrow(num);
+                  }
                 }
+                if (c == ',') {
+                  if (col == 1) {
+                    ledDot(num);
+                  }
+                  num = 0;
+                  col++;
+                }
+
                 if ((c == '\0') || (c == ']'))
                   break;
                 if ((c >= '0') && (c <= '9')) {
                   num = num * 10;
                   num += (byte)c - (byte)'0';
                 }
-                bodyLen--;
-                if (bodyLen == 0)
-                  break;
               }
               timeoutStart = millis();
             } else {
